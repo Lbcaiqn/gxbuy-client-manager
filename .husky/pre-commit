@@ -1,0 +1,7 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+npm run format
+
+# 因为格式化后试一次新的修改，而之前add在暂存区的代码还是未修改的，所以这里需要再次add新的修改
+git add .
+
