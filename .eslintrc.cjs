@@ -42,6 +42,7 @@ module.exports = {
     // eslint（https://eslint.bootcss.com/docs/rules/）
     quotes: ["error", "double", { avoidEscape: true, allowTemplateLiterals: true }], // 双引号和反引号包裹字符串
     semi: ["error", "always"], // 结尾加分号
+    "space-before-function-paren": ["error", "never"], // 函数名和括号之间没有空格
     "no-var": "error", // 要求使用 let 或 const 而不是 var
     "no-multiple-empty-lines": ["warn", { max: 1 }], // 不允许多个空行
     "no-console": process.env.NODE_ENV === "production" ? "error" : "off",

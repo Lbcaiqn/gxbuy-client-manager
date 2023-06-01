@@ -1,10 +1,9 @@
 <script setup lang="ts">
-const a = "123";
+import Layout from "./Layout/Layout.vue";
 </script>
 
 <template>
-  123
-  <SvgIcon name="aaa" />
+  <Layout></Layout>
 </template>
 
 <style lang="less"></style>
