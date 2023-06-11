@@ -4,7 +4,7 @@ import LayoutHeader from "./LayoutHeader.vue";
 import LayoutMain from "./LayoutMain.vue";
 import { useRoute, useRouter } from "vue-router";
 import { MenuStore, UserStore } from "@/store";
-import { getUserInfoRequest } from "@/api/request/user";
+import { getUserInfoRequest } from "@/api";
 import { addAuthRoutes } from "@/router/authRoutes";
 import { myMessage } from "@/tools/myMessage";
 
@@ -20,6 +20,7 @@ async function init() {
 
       userStore.userInfo = res.userInfo;
       userStore.routesName = res.routesName;
+      userStore.button = res.buttons;
 
       await addAuthRoutes(userStore.routesName);
 
@@ -38,7 +39,7 @@ init();
   <router-view v-if="!$route.meta.useLayout"></router-view>
   <div v-else class="pc-center">
     <el-container style="height: 100vh">
-      <el-aside class="layout-aside" :width="menuStore.menuIsCollapse ? '69px' : '200px'">
+      <el-aside class="layout-aside" :width="menuStore.menuIsCollapse ? '66px' : '200px'">
         <el-scrollbar>
           <LayoutAside></LayoutAside>
         </el-scrollbar>

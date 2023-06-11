@@ -1,5 +1,5 @@
 <script setup lang="ts"></script>
 
-<template>role</template>
+<template>comment</template>
 
 <style lang="less" scoped></style>

@@ -45,7 +45,8 @@ export const UserStore = defineStore(
     const state = reactive<UserStoreStateInterface>({
       gxbuy_manager_jwt: "",
       userInfo: null,
-      routesName: []
+      routesName: [],
+      button: []
     });
 
     return {

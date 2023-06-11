@@ -10,22 +10,9 @@ import { deepCopy } from "@/tools/deepCopy";
  */
 const authRoutes: Array<RouteRecordRaw> = [
   {
-    path: "/home",
-    name: "home",
-    component: () => import("@/views/Home/Home.vue"),
-    meta: {
-      useLayout: true,
-      jwt: false,
-      menuData: {
-        title: "首页",
-        icon: "home-filled"
-      }
-    }
-  },
-  {
-    path: "/authority",
-    name: "authority",
-    component: () => import("@/views/Authority/Authority.vue"),
+    path: "/authorityManage",
+    name: "authorityManage",
+    component: () => import("@/views/AuthorityManage/AuthorityManage.vue"),
     meta: {
       useLayout: true,
       jwt: true,
@@ -38,7 +25,7 @@ const authRoutes: Array<RouteRecordRaw> = [
       {
         path: "roleManage",
         name: "roleManage",
-        component: () => import("@/views/Authority/children/RoleManage.vue"),
+        component: () => import("@/views/AuthorityManage/children/RoleManage.vue"),
         meta: {
           useLayout: true,
           jwt: true,
@@ -51,12 +38,66 @@ const authRoutes: Array<RouteRecordRaw> = [
       {
         path: "userManage",
         name: "userManage",
-        component: () => import("@/views/Authority/children/UserManage.vue"),
+        component: () => import("@/views/AuthorityManage/children/UserManage.vue"),
         meta: {
           useLayout: true,
           jwt: true,
           menuData: {
             title: "用户管理",
+            icon: "user-filled"
+          }
+        }
+      }
+    ]
+  },
+  {
+    path: "/goodsManage",
+    name: "goodsManage",
+    component: () => import("@/views/GoodsManage/GoodsManage.vue"),
+    meta: {
+      useLayout: true,
+      jwt: true,
+      menuData: {
+        title: "商品管理",
+        icon: "user-filled"
+      }
+    }
+  },
+  {
+    path: "/orderManage",
+    name: "orderManage",
+    component: () => import("@/views/OrderManage/OrderManage.vue"),
+    meta: {
+      useLayout: true,
+      jwt: true,
+      menuData: {
+        title: "订单管理",
+        icon: "user-filled"
+      }
+    },
+    children: [
+      {
+        path: "logisticsManage",
+        name: "logisticsManage",
+        component: () => import("@/views/OrderManage/children/LogisticsManage.vue"),
+        meta: {
+          useLayout: true,
+          jwt: true,
+          menuData: {
+            title: "物流管理",
+            icon: "user-filled"
+          }
+        }
+      },
+      {
+        path: "commentManage",
+        name: "commentManage",
+        component: () => import("@/views/OrderManage/children/CommentManage.vue"),
+        meta: {
+          useLayout: true,
+          jwt: true,
+          menuData: {
+            title: "评论管理",
             icon: "user-filled"
           }
         }
@@ -92,6 +133,9 @@ function getMenuData(routes: Array<RouteRecordRaw>, parentPath: string = ""): Ar
   const menuData: Array<MenuDataInterface> = [];
 
   for (let i of routes) {
+    if (["", "/"].includes(i.path)) continue;
+    if (!i?.meta?.menuData) continue;
+
     if (i?.children?.length! > 0) {
       menuData.push({
         path: i.path,
@@ -106,6 +150,7 @@ function getMenuData(routes: Array<RouteRecordRaw>, parentPath: string = ""): Ar
 }
 
 // 如果想给每个子路由都增加默认路由，可使用此函数
+
 function addDefaultRoute(routes: Array<RouteRecordRaw>, parentPath: string = ""): Array<RouteRecordRaw> {
   for (let index in routes) {
     if (index === "0") {
@@ -132,5 +177,5 @@ export async function addAuthRoutes(routesName: Array<RoutesNameInterface>) {
 
   // 菜单信息存储到pinia中
   const menuStore = store.state.value.Menu;
-  menuStore.menuData = getMenuData(routes);
+  menuStore.menuData = getMenuData([...router.options.routes, ...routes, routes] as Array<RouteRecordRaw>);
 }

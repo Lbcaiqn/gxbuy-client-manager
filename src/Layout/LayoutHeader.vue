@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ArrowRight } from "@element-plus/icons-vue";
-import { MenuStore, HeaderStore, UserStore } from "@/store";
+import { HeaderStore, MenuStore, UserStore } from "@/store";
 import NoneUserImg from "@/assets/img/none/none_user.jpg";
 import router from "@/router";
 
-const menuStore = MenuStore();
 const headerStore = HeaderStore();
+const menuStore = MenuStore();
 const userStore = UserStore();
 
 // const baseURL = ref(
@@ -20,16 +20,14 @@ function fullScreen() {
   document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
 }
 
-function logout() {
-  menuStore.menuIsCollapse = false;
-  menuStore.menuData = [];
-  headerStore.breadCrumb = ["首页"];
-  userStore.gxbuy_manager_jwt = "";
-  userStore.userInfo = {};
-  userStore.routesName = [];
+async function logout() {
+  localStorage.setItem("gxbuy_manager_user_store", "");
+  localStorage.setItem("gxbuy_manager_menu_store", "");
+  localStorage.setItem("gxbuy_manager_header_store", "");
+
+  await router.push("/login");
 
   router.go(0);
-  router.push("/login");
 }
 </script>
 
@@ -43,6 +41,7 @@ function logout() {
           size="small"
           icon="hide"
           circle
+          title="收起菜单"
           @click="collapseMenu"
         ></el-button>
       </div>
@@ -57,13 +56,13 @@ function logout() {
     </div>
     <div class="operate">
       <div class="operate-btn">
-        <el-button size="small" icon="FullScreen" circle @click="fullScreen"></el-button>
+        <el-button size="small" icon="FullScreen" circle @click="fullScreen" title="全屏"></el-button>
       </div>
       <div class="user-info">
-        <el-image :src="userStore.userInfo.shop_manager_icon || NoneUserImg" lazy></el-image>
+        <el-image :src="userStore.userInfo.shop_manager_icon || NoneUserImg"></el-image>
         <el-dropdown>
           <span class="el-dropdown-link">
-            <span>超级管理员</span>
+            <span>{{ userStore.userInfo.shop_manager_name }}</span>
             <el-icon class="el-icon--right">
               <arrow-down />
             </el-icon>
@@ -85,7 +84,6 @@ function logout() {
   justify-content: space-between;
   align-items: center;
   height: 100%;
-  border-bottom: 2px solid #000;
 
   .title {
     display: flex;

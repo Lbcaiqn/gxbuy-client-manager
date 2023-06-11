@@ -2,7 +2,7 @@
 import { ref, reactive } from "vue";
 import { useRouter } from "vue-router";
 import { UserStore } from "@/store";
-import { userLoginRequest } from "@/api/request/user";
+import { userLoginRequest } from "@/api";
 import { myMessage } from "@/tools/myMessage.ts";
 import { addAuthRoutes } from "@/router/authRoutes";
 import type { FormInstance, FormRules } from "element-plus";
@@ -89,6 +89,7 @@ function login(formEl: FormInstance | undefined) {
       userStore.gxbuy_manager_jwt = res.jwt;
       userStore.userInfo = res.userInfo;
       userStore.routesName = res.routesName;
+      userStore.button = res.buttons;
 
       await addAuthRoutes(userStore.routesName);
       router.push("/home");

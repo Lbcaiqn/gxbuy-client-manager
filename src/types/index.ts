@@ -1,3 +1,3 @@
 export * from "./types/authority";
 export * from "./types/store";
-export * from "./types/user";
+export * from "./types/request";

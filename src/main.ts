@@ -3,6 +3,8 @@ import "@/assets/style/global.less";
 import "virtual:svg-icons-register";
 import gloablComponent from "./components/common/globalComponent";
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
+import "element-plus/dist/index.css";
+import { authBtn } from "./directives/authBtn";
 import router from "./router";
 import store from "./store";
 import App from "./App.vue";
@@ -14,3 +16,5 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 }
 
 app.use(gloablComponent).use(router).use(store).mount("#app");
+
+authBtn(app);

@@ -31,6 +31,7 @@ function menuItemClick(path: string, titleList: Array<string>) {
           icon="view"
           circle
           color="#545c64"
+          title="展开菜单"
           @click="menuStore.menuIsCollapse = !menuStore.menuIsCollapse"
         ></el-button>
       </p>
@@ -50,17 +51,15 @@ function menuItemClick(path: string, titleList: Array<string>) {
             <el-icon><i-ep-user-filled></i-ep-user-filled></el-icon>
             <span>{{ first.title }}</span>
           </template>
-          <el-menu-item-group>
-            <el-menu-item
-              v-for="(second, secondIndex) in first.children"
-              :key="secondIndex"
-              :index="`${firstIndex + 1}-${secondIndex + 1}`"
-              @click="menuItemClick(second.path, [first.title, second.title])"
-            >
-              <el-icon><Component :is="second.icon"></Component></el-icon>
-              <template #title>{{ second.title }}</template>
-            </el-menu-item>
-          </el-menu-item-group>
+          <el-menu-item
+            v-for="(second, secondIndex) in first.children"
+            :key="secondIndex"
+            :index="`${firstIndex + 1}-${secondIndex + 1}`"
+            @click="menuItemClick(second.path, [first.title, second.title])"
+          >
+            <el-icon><Component :is="second.icon"></Component></el-icon>
+            <template #title>{{ second.title }}</template>
+          </el-menu-item>
         </el-sub-menu>
       </template>
     </el-menu>

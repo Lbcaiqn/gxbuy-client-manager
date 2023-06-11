@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  authority
+  order
   <router-view></router-view>
 </template>
 

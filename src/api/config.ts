@@ -46,13 +46,14 @@ instance.interceptors.response.use(
       await router.isReady();
       cancelTokenSource.cancel();
 
-      // 如果首页会发送需要鉴权的请求，嘛呢过期了就不及自动今日登录界面，不认用户体验性不好，用户自己重新点击登录
-      if (router.currentRoute.value.name !== "home") {
-        router.push({
-          path: "/login",
-          query: { toPath: router.currentRoute.value.fullPath }
-        });
-      }
+      localStorage.setItem("gxbuy_manager_user_store", "");
+      localStorage.setItem("gxbuy_manager_menu_store", "");
+      localStorage.setItem("gxbuy_manager_header_store", "");
+
+      router.push({
+        path: "/login",
+        query: { toPath: router.currentRoute.value.fullPath }
+      });
 
       return Promise.reject(new Error("请重新登录"));
     }

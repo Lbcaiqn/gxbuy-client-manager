@@ -14,4 +14,5 @@ export interface UserStoreStateInterface {
   gxbuy_manager_jwt: string;
   userInfo: any;
   routesName: Array<RoutesNameInterface>;
+  button: Array<string>;
 }
