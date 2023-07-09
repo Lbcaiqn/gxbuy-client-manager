@@ -18,7 +18,7 @@ const authRoutes: Array<RouteRecordRaw> = [
       jwt: true,
       menuData: {
         title: "权限管理",
-        icon: "user-filled"
+        icon: "lock"
       }
     },
     children: [
@@ -31,7 +31,7 @@ const authRoutes: Array<RouteRecordRaw> = [
           jwt: true,
           menuData: {
             title: "角色管理",
-            icon: "user-filled"
+            icon: "CreditCard"
           }
         }
       },
@@ -59,51 +59,51 @@ const authRoutes: Array<RouteRecordRaw> = [
       jwt: true,
       menuData: {
         title: "商品管理",
-        icon: "user-filled"
+        icon: "DocumentCopy"
       }
     }
-  },
-  {
-    path: "/orderManage",
-    name: "orderManage",
-    component: () => import("@/views/OrderManage/OrderManage.vue"),
-    meta: {
-      useLayout: true,
-      jwt: true,
-      menuData: {
-        title: "订单管理",
-        icon: "user-filled"
-      }
-    },
-    children: [
-      {
-        path: "logisticsManage",
-        name: "logisticsManage",
-        component: () => import("@/views/OrderManage/children/LogisticsManage.vue"),
-        meta: {
-          useLayout: true,
-          jwt: true,
-          menuData: {
-            title: "物流管理",
-            icon: "user-filled"
-          }
-        }
-      },
-      {
-        path: "commentManage",
-        name: "commentManage",
-        component: () => import("@/views/OrderManage/children/CommentManage.vue"),
-        meta: {
-          useLayout: true,
-          jwt: true,
-          menuData: {
-            title: "评论管理",
-            icon: "user-filled"
-          }
-        }
-      }
-    ]
   }
+  // {
+  //   path: "/orderManage",
+  //   name: "orderManage",
+  //   component: () => import("@/views/OrderManage/OrderManage.vue"),
+  //   meta: {
+  //     useLayout: true,
+  //     jwt: true,
+  //     menuData: {
+  //       title: "订单管理",
+  //       icon: "user-filled"
+  //     }
+  //   },
+  //   children: [
+  //     {
+  //       path: "logisticsManage",
+  //       name: "logisticsManage",
+  //       component: () => import("@/views/OrderManage/children/LogisticsManage.vue"),
+  //       meta: {
+  //         useLayout: true,
+  //         jwt: true,
+  //         menuData: {
+  //           title: "物流管理",
+  //           icon: "user-filled"
+  //         }
+  //       }
+  //     },
+  //     {
+  //       path: "commentManage",
+  //       name: "commentManage",
+  //       component: () => import("@/views/OrderManage/children/CommentManage.vue"),
+  //       meta: {
+  //         useLayout: true,
+  //         jwt: true,
+  //         menuData: {
+  //           title: "评论管理",
+  //           icon: "user-filled"
+  //         }
+  //       }
+  //     }
+  //   ]
+  // }
 ];
 
 // 根据后端返回的该用户具有的菜单name，筛选出对应的路由

@@ -1,8 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  order
-  <router-view></router-view>
+  <div><router-view></router-view></div>
 </template>
 
 <style lang="less" scoped></style>

@@ -21,10 +21,19 @@ const props = withDefaults(
 const emit = defineEmits(["cancel", "refreshData"]);
 
 // 初始化数据 -------------------------------------------------------------------
+const myFormRef = ref<any>(null);
 
 const formList = ref<any>({
   formMessage: [
-    [{ type: "textarea", formItemLabel: "商品名", label: "商品名", model: "goodsSpuName" }],
+    [
+      {
+        type: "textarea",
+        formItemLabel: "商品名",
+        label: "商品名",
+        model: "goodsSpuName",
+        rules: [{ type: "required", errorMessage: "SPU名称不能为空" }]
+      }
+    ],
 
     [
       {
@@ -32,19 +41,22 @@ const formList = ref<any>({
         formItemLabel: "所属分类",
         label: "一级分类",
         model: "c1id",
-        options: []
+        options: [],
+        rules: [{ type: "required", errorMessage: "请选择一级菜单" }]
       },
       {
         type: "select",
         label: "二级分类",
         model: "c2id",
-        options: []
+        options: [],
+        rules: [{ type: "required", errorMessage: "请选择二级菜单" }]
       },
       {
         type: "select",
         label: "三级分类",
         model: "c3id",
-        options: []
+        options: [],
+        rules: [{ type: "required", errorMessage: "请选择三级菜单" }]
       }
     ],
 
@@ -53,7 +65,8 @@ const formList = ref<any>({
         type: "upload-one",
         formItemLabel: "商品主图",
         action: "https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15",
-        model: "goodsSpuMainImg"
+        model: "goodsSpuMainImg",
+        rules: [{ type: "required", errorMessage: "请上传主图" }]
       }
     ],
 
@@ -102,6 +115,7 @@ function clearSpuFormData() {
   formList.value.formData.bannerImgList.fileList = [];
   formList.value.formData.detailImgList.fileList = [];
   salesAttrs.value = [];
+  if (myFormRef.value) myFormRef.value.reset({ resetValueToo: false });
 }
 
 function spuFormInit() {
@@ -218,12 +232,18 @@ function selectChange(payload: { rowIndex: number; columnIndex: number }) {
 }
 
 // 提交 ------------------------------------------------------
+
 async function submit() {
   const { goodsSpuName, goodsSpuMainImg, c1id, c2id, c3id } = formList.value.formData;
 
   const bannerImgList = formList.value.formData.bannerImgList.fileList.map((i: any) => i.url);
   const detailImgList = formList.value.formData.detailImgList.fileList.map((i: any) => i.url);
   const spuSalesAttrs = salesAttrs.value;
+
+  if (spuSalesAttrs.length === 0) {
+    myMessage("至少需要一条销售属性", "error");
+    return;
+  }
 
   // 新增SPU
   if (JSON.stringify(props.currentUpdateSpu) === "{}") {
@@ -268,6 +288,7 @@ async function submit() {
 
 <template>
   <MyForm
+    ref="myFormRef"
     :formMessage="formList.formMessage"
     :formData="formList.formData"
     :useExtraFormItem="true"

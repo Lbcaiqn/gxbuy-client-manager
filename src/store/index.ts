@@ -1,7 +1,8 @@
 // /src/store/index.js
 import { createPinia, defineStore } from "pinia";
-import { MenuStoreStateInterface, HeaderStoreStateInterface, UserStoreStateInterface } from "@/types";
+import { MenuStoreStateInterface, UserStoreStateInterface } from "@/types";
 import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
+import { reactive, toRefs } from "vue";
 
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
@@ -10,32 +11,17 @@ export const MenuStore = defineStore(
   "Menu",
   () => {
     const state = reactive<MenuStoreStateInterface>({
+      defaultOpen: ["3"],
+      defaultActive: "",
       menuIsCollapse: false,
       menuData: []
     });
-
     return {
       ...toRefs(state)
     };
   },
   {
     persist: { key: "gxbuy_manager_menu_store", storage: window.localStorage }
-  }
-);
-
-export const HeaderStore = defineStore(
-  "Header",
-  () => {
-    const state = reactive<HeaderStoreStateInterface>({
-      breadCrumb: ["首页"]
-    });
-
-    return {
-      ...toRefs(state)
-    };
-  },
-  {
-    persist: { key: "gxbuy_manager_header_store", storage: window.localStorage }
   }
 );
 
@@ -48,7 +34,6 @@ export const UserStore = defineStore(
       routesName: [],
       button: []
     });
-
     return {
       ...toRefs(state)
     };

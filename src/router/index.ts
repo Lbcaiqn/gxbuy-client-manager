@@ -20,6 +20,19 @@ const routes: Array<RouteRecordRaw> = [
     }
   },
   {
+    path: "/salesData",
+    name: "salesData",
+    component: () => import("@/views/SalesData/SalesData.vue"),
+    meta: {
+      useLayout: false,
+      jwt: true,
+      menuData: {
+        title: "销售数据",
+        icon: "DataAnalysis"
+      }
+    }
+  },
+  {
     path: "/login",
     name: "login",
     component: () => import("@/views/Login/Login.vue"),

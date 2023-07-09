@@ -12,6 +12,7 @@ import { myMessage } from "@/tools/myMessage";
 import { formatDate } from "@/tools/formatDate";
 import { deepCopy } from "@/tools/deepCopy";
 import { arrayObjectToObject, objectToArrayObject } from "@/tools/treeChange";
+import MySearcher from "@/components/content/MySearcher.vue";
 import MyForm from "@/components/common/MyForm.vue";
 import TreeTable from "@/components/common/TreeTable.vue";
 import { merge } from "lodash";
@@ -33,6 +34,29 @@ async function init() {
 
 init();
 
+// 搜索 -----------------------------------------------------------------------
+const isSearching = ref(false);
+const isAllSearching = ref(false);
+
+async function search(payload: any) {
+  const { type, keyword } = payload;
+
+  if (type === "search") isSearching.value = true;
+  else if (type === "all") isAllSearching.value = true;
+
+  try {
+    authorityData.value = (await getAuthorityDataRequest()).data;
+    authorityDataCopy.value = deepCopy(authorityData.value);
+    roleList.value = (await getRoleListRequest({ keyword, pageSize: 20, page: 1 })).data;
+    currentPage.value = 1;
+  } catch (err: any) {
+    myMessage(err, "error", true);
+  }
+
+  if (type === "search") isSearching.value = false;
+  else if (type === "all") isAllSearching.value = false;
+}
+
 // 分页 --------------------------------------------------------------------------
 const pageSize = ref(20);
 const currentPage = ref(1);
@@ -45,13 +69,27 @@ async function currentChange() {
   }
 }
 // CRUD -------------------------------------------------------------------
+const myFormRef = ref<any>(null);
 const showDialog = ref(false);
 const dialogTitle = ref("");
 const crud = ref<"add" | "update">("add");
 const updateRoleId = ref("");
 
 const formList = ref<any>({
-  formMessage: [[{ type: "text", formItemLabel: "角色名", label: "角色名", model: "shopManagerRoleName" }]],
+  formMessage: [
+    [
+      {
+        type: "text",
+        formItemLabel: "角色名",
+        label: "角色名",
+        model: "shopManagerRoleName",
+        rules: [
+          { type: "required", errorMessage: "请输入角色名" },
+          { type: "reg", errorMessage: "角色名应该是2-30个字符", reg: [/.{2,30}/] }
+        ]
+      }
+    ]
+  ],
   formData: {
     shopManagerRoleName: ""
   }
@@ -60,6 +98,7 @@ const formList = ref<any>({
 function clearRoleFormData() {
   formList.value.formData = { shopManagerRoleName: "" };
   authorityData.value = deepCopy(authorityDataCopy.value);
+  if (myFormRef.value) myFormRef.value.reset({ resetValueToo: false });
 }
 
 function addRole() {
@@ -70,6 +109,8 @@ function addRole() {
 }
 
 function updateRole(role: any) {
+  if (myFormRef.value) myFormRef.value.reset({ resetValueToo: false });
+
   crud.value = "update";
   updateRoleId.value = role._id;
 
@@ -160,83 +201,94 @@ async function confirmDelete() {
 </script>
 
 <template>
-  <el-card v-if="JSON.stringify(roleList) !== '{}'" style="amrgin: 10px 0">
-    <div>
-      <el-button v-auth-btn="'role-add-role'" type="primary" size="default" icon="Plus" @click="addRole">
-        新增角色
-      </el-button>
+  <div>
+    <MySearcher
+      :placeholder="'请输入角色名称'"
+      :isSearching="isSearching"
+      :isAllSearching="isAllSearching"
+      @search="search"
+      @allSearch="search"
+    />
 
-      <el-table style="margin: 10px 0px" :border="true" :data="roleList.data">
-        <el-table-column label="序号" type="index" :align="'center'" width="80px">
-          <template #default="{ $index }">{{ (currentPage - 1) * pageSize + $index + 1 }}</template>
-        </el-table-column>
-        <el-table-column label="角色名称" prop="shop_manager_role_name" show-overflow-tooltip></el-table-column>
-        <el-table-column label="修改时间" prop="update_time" show-overflow-tooltip>
-          <template #default="{ row }">{{ formatDate(new Date(row.update_time), "yyyy-0M-0d 0h:0m:0s") }}</template>
-        </el-table-column>
+    <el-card v-if="JSON.stringify(roleList) !== '{}'" style="amrgin: 10px 0">
+      <div>
+        <el-button v-auth-btn="'role-add-role'" type="primary" size="default" icon="Plus" @click="addRole">
+          新增角色
+        </el-button>
 
-        <el-table-column label="角色操作">
-          <template #default="{ row }">
-            <el-button
-              v-auth-btn="'role-update-role'"
-              type="primary"
-              size="small"
-              icon="Edit"
-              title="修改角色"
-              :disabled="row.shop_manager_role_name === 'admin'"
-              @click="updateRole(row)"
-            ></el-button>
-            <el-button
-              v-auth-btn="'role-delete-role'"
-              type="danger"
-              size="small"
-              icon="Delete"
-              title="删除角色"
-              :disabled="row.shop_manager_role_name === 'admin'"
-              @click="deleteRole(row._id)"
-            ></el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+        <el-table style="margin: 10px 0px" :border="true" :data="roleList.data">
+          <el-table-column label="序号" type="index" :align="'center'" width="80px">
+            <template #default="{ $index }">{{ (currentPage - 1) * pageSize + $index + 1 }}</template>
+          </el-table-column>
+          <el-table-column label="角色名称" prop="shop_manager_role_name" show-overflow-tooltip></el-table-column>
+          <el-table-column label="修改时间" prop="update_time" show-overflow-tooltip>
+            <template #default="{ row }">{{ formatDate(new Date(row.update_time), "yyyy-0M-0d 0h:0m:0s") }}</template>
+          </el-table-column>
 
-      <div class="pagination">
-        <el-pagination
-          v-model:currentPage="currentPage"
-          v-model:pageSize="pageSize"
-          :background="true"
-          layout="prev, pager, next, jumper, ->, total"
-          :total="roleList.total"
-          @currentChange="currentChange"
-        />
+          <el-table-column label="角色操作">
+            <template #default="{ row }">
+              <el-button
+                v-auth-btn="'role-update-role'"
+                type="primary"
+                size="small"
+                icon="Edit"
+                title="修改角色"
+                :disabled="row.shop_manager_role_name === 'admin'"
+                @click="updateRole(row)"
+              ></el-button>
+              <el-button
+                v-auth-btn="'role-delete-role'"
+                type="danger"
+                size="small"
+                icon="Delete"
+                title="删除角色"
+                :disabled="row.shop_manager_role_name === 'admin'"
+                @click="deleteRole(row._id)"
+              ></el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <div class="pagination">
+          <el-pagination
+            v-model:currentPage="currentPage"
+            v-model:pageSize="pageSize"
+            :background="true"
+            layout="prev, pager, next, jumper, ->, total"
+            :total="roleList.total"
+            @currentChange="currentChange"
+          />
+        </div>
       </div>
-    </div>
-  </el-card>
+    </el-card>
 
-  <el-dialog v-model="showDialog" :title="dialogTitle" width="80%" center>
-    <MyForm
-      :formMessage="formList.formMessage"
-      :formData="formList.formData"
-      :useExtraFormItem="true"
-      :extraFormItemLabel="'权限列表'"
-      @cancel="showDialog = false"
-      @reset="clearRoleFormData"
-      @submit="submit"
-    >
-      <template #extraFormItem>
-        <TreeTable :tableData="authorityData" />
+    <el-dialog v-model="showDialog" :title="dialogTitle" width="80%" center>
+      <MyForm
+        ref="myFormRef"
+        :formMessage="formList.formMessage"
+        :formData="formList.formData"
+        :useExtraFormItem="true"
+        :extraFormItemLabel="'权限列表'"
+        @cancel="showDialog = false"
+        @reset="clearRoleFormData"
+        @submit="submit"
+      >
+        <template #extraFormItem>
+          <TreeTable :tableData="authorityData" />
+        </template>
+      </MyForm>
+    </el-dialog>
+
+    <el-dialog v-model="showDeleteDialog" title="温馨提示" center>
+      <p style="text-align: center; font-size: 25px">确定删除吗？</p>
+      <template #footer>
+        <span class="dialog-footer">
+          <el-button @click="showDeleteDialog = false">取消</el-button>
+          <el-button type="danger" @click="confirmDelete">确定</el-button>
+        </span>
       </template>
-    </MyForm>
-  </el-dialog>
-
-  <el-dialog v-model="showDeleteDialog" title="温馨提示" center>
-    <p style="text-align: center; font-size: 25px">确定删除吗？</p>
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="showDeleteDialog = false">取消</el-button>
-        <el-button type="danger" @click="confirmDelete">确定</el-button>
-      </span>
-    </template>
-  </el-dialog>
+    </el-dialog>
+  </div>
 </template>
 
 <style lang="less" scoped></style>

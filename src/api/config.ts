@@ -48,7 +48,6 @@ instance.interceptors.response.use(
 
       localStorage.setItem("gxbuy_manager_user_store", "");
       localStorage.setItem("gxbuy_manager_menu_store", "");
-      localStorage.setItem("gxbuy_manager_header_store", "");
 
       router.push({
         path: "/login",

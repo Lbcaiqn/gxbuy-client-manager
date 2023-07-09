@@ -1,9 +1,11 @@
 <script setup lang="ts"></script>
 
 <template>
-  <p>404 Not Found</p>
-  <div class="btn">
-    <el-button type="primary" size="large" @click="$router.replace('/home')">前往首页</el-button>
+  <div>
+    <p>404 Not Found</p>
+    <div class="btn">
+      <el-button type="primary" size="large" @click="$router.replace('/home')">前往首页</el-button>
+    </div>
   </div>
 </template>
 

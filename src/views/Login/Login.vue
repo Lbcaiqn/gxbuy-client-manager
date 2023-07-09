@@ -13,7 +13,7 @@ const userStore = UserStore();
 const loginFormRef = ref<FormInstance>();
 
 const loginInfo = reactive({
-  shopAccount: "00000001",
+  shopAccount: String(Math.floor(Math.random() * 250 + 1)).padStart(8, "0"),
   shopPassword: "qwer1234",
   userAccount: "admin",
   userPassword: "qwer1234"
@@ -22,6 +22,7 @@ const loginInfo = reactive({
 // 检验规则
 function validateShopAccount(rule: any, value: any, callback: any) {
   if (!rule) return;
+  console.log(rule);
 
   if (value === "") {
     callback(new Error("商家账号不能为空"));
@@ -237,6 +238,7 @@ function fullScreen() {
 
       .error {
         margin-left: -86px;
+        color: red;
       }
     }
 

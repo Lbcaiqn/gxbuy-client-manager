@@ -2,12 +2,10 @@ import { MenuDataInterface } from "./authority";
 import { RoutesNameInterface } from "./authority";
 
 export interface MenuStoreStateInterface {
+  defaultOpen: Array<string>;
+  defaultActive: string;
   menuIsCollapse: boolean;
   menuData: Array<MenuDataInterface>;
-}
-
-export interface HeaderStoreStateInterface {
-  breadCrumb: Array<string>;
 }
 
 export interface UserStoreStateInterface {

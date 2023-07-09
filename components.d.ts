@@ -9,13 +9,21 @@ export {};
 
 declare module "@vue/runtime-core" {
   export interface GlobalComponents {
+    AddItemTable: typeof import("./src/components/common/addItemTable.vue")["default"];
     ElAside: typeof import("element-plus/es")["ElAside"];
+    ElBreadcrumb: typeof import("element-plus/es")["ElBreadcrumb"];
+    ElBreadcrumbItem: typeof import("element-plus/es")["ElBreadcrumbItem"];
+    ElButton: typeof import("element-plus/es")["ElButton"];
+    ElCard: typeof import("element-plus/es")["ElCard"];
+    ElColorPicker: typeof import("element-plus/es")["ElColorPicker"];
     ElContainer: typeof import("element-plus/es")["ElContainer"];
+    ElDrawer: typeof import("element-plus/es")["ElDrawer"];
     ElDropdown: typeof import("element-plus/es")["ElDropdown"];
     ElDropdownItem: typeof import("element-plus/es")["ElDropdownItem"];
     ElDropdownMenu: typeof import("element-plus/es")["ElDropdownMenu"];
     ElHeader: typeof import("element-plus/es")["ElHeader"];
     ElIcon: typeof import("element-plus/es")["ElIcon"];
+    ElImage: typeof import("element-plus/es")["ElImage"];
     ElMain: typeof import("element-plus/es")["ElMain"];
     ElMenu: typeof import("element-plus/es")["ElMenu"];
     ElMenuItem: typeof import("element-plus/es")["ElMenuItem"];
@@ -25,8 +33,13 @@ declare module "@vue/runtime-core" {
     ElSubMenu: typeof import("element-plus/es")["ElSubMenu"];
     ElTable: typeof import("element-plus/es")["ElTable"];
     ElTableColumn: typeof import("element-plus/es")["ElTableColumn"];
+    MyEcharts: typeof import("./src/components/common/MyEcharts.vue")["default"];
+    MyForm: typeof import("./src/components/common/MyForm.vue")["default"];
+    MySearcher: typeof import("./src/components/content/MySearcher.vue")["default"];
+    MyUpload: typeof import("./src/components/common/MyUpload.vue")["default"];
     RouterLink: typeof import("vue-router")["RouterLink"];
     RouterView: typeof import("vue-router")["RouterView"];
     SvgIcon: typeof import("./src/components/common/SvgIcon.vue")["default"];
+    TreeTable: typeof import("./src/components/common/TreeTable.vue")["default"];
   }
 }

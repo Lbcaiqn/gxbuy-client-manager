@@ -21,9 +21,19 @@ const props = withDefaults(
 
 const emit = defineEmits(["cancel", "refreshData"]);
 
+const myFormRef = ref<any>(null);
+
 const formList = ref<any>({
   formMessage: [
-    [{ type: "textarea", formItemLabel: "SKU名称", label: "SKU名称", model: "goodsSkuName" }],
+    [
+      {
+        type: "textarea",
+        formItemLabel: "SKU名称",
+        label: "SKU名称",
+        model: "goodsSkuName",
+        rules: [{ type: "required", errorMessage: "SKU名称不能为空" }]
+      }
+    ],
 
     [],
 
@@ -32,11 +42,31 @@ const formList = ref<any>({
         type: "upload-one",
         formItemLabel: "SKU图片",
         action: "https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15",
-        model: "goodsSkuImg"
+        model: "goodsSkuImg",
+        rules: [{ type: "required", errorMessage: "请上传SKU图片" }]
       }
     ],
-    [{ type: "number", formItemLabel: "价格", label: "价格", model: "goodsSkuPrice" }],
-    [{ type: "number", formItemLabel: "库存", label: "库存", model: "goodsSkuStock" }]
+    [
+      {
+        type: "number",
+        formItemLabel: "价格",
+        label: "价格",
+        model: "goodsSkuPrice",
+        unsigned: true,
+        rules: [{ type: "required", errorMessage: "请输入价格" }]
+      }
+    ],
+    [
+      {
+        type: "number",
+        formItemLabel: "库存",
+        label: "库存",
+        model: "goodsSkuStock",
+        unsigned: true,
+        integer: true,
+        rules: [{ type: "required", errorMessage: "请输入库存" }]
+      }
+    ]
   ],
   formData: {
     goodsSkuName: "",
@@ -54,39 +84,35 @@ function clearSkuFormData() {
 
   formList.value.formMessage[1] = [];
 
-  formList.value.formData = {
-    goodsSkuName: "",
-    goodsSkuImg: "",
-    goodsSkuPrice: "",
-    goodsSkuStock: ""
-  };
+  if (myFormRef.value) myFormRef.value.reset({ resetValueToo: false });
+
+  if (JSON.stringify(props.currentOperateSpu) === "{}") return;
+
+  const spuSalesAttrs = props.currentOperateSpu?.spu_sales_attrs;
+  // 动态添加销售属性的select框
+  for (const i of spuSalesAttrs) {
+    formList.value.formData["salesAttrsIs" + i.name] = "";
+    formList.value.formMessage[1].push({
+      type: "select",
+      formItemLabel: "销售属性",
+      label: i.name,
+      model: "salesAttrsIs" + i.name,
+      options: i.values.map((i: any) => {
+        return {
+          value: i,
+          text: i
+        };
+      })
+    });
+  }
 }
 
 function skuFormInit() {
   clearSkuFormData();
 
-  if (JSON.stringify(props.currentOperateSpu) === "{}") return;
-
   const spuSalesAttrs = props.currentOperateSpu?.spu_sales_attrs;
 
-  if (JSON.stringify(props.currentOperateSku) === "{}") {
-    // 动态添加销售属性的select框
-    for (const i of spuSalesAttrs) {
-      formList.value.formData["salesAttrsIs" + i.name] = "";
-      formList.value.formMessage[1].push({
-        type: "select",
-        formItemLabel: "销售属性",
-        label: i.name,
-        model: "salesAttrsIs" + i.name,
-        options: i.values.map((i: any) => {
-          return {
-            value: i,
-            text: i
-          };
-        })
-      });
-    }
-  } else {
+  if (JSON.stringify(props.currentOperateSku) !== "{}") {
     formList.value.formData.goodsSkuName = props.currentOperateSku.goods_sku_name;
     formList.value.formData.goodsSkuImg = props.currentOperateSku.goods_sku_img;
     formList.value.formData.goodsSkuPrice = props.currentOperateSku.goods_sku_price;
@@ -177,6 +203,7 @@ async function submit() {
 
 <template>
   <MyForm
+    ref="myFormRef"
     :formMessage="formList.formMessage"
     :formData="formList.formData"
     @cancel="emit('cancel')"

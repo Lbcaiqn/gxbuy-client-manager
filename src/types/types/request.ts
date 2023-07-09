@@ -8,6 +8,7 @@ export interface UserLoginParameter {
 export interface GetGoodsSpuListParameter {
   pageSize?: number;
   page?: number;
+  keyword?: string;
 }
 
 export interface GetGoodsSkuListParameter {
@@ -57,6 +58,7 @@ export interface GetRoleListParameter {
   pageSize?: number;
   page?: number;
   goodsSpuId?: string;
+  keyword?: string;
 }
 
 export interface RoleAuthorityInterface {
@@ -80,6 +82,7 @@ export interface GetManagerListParameter {
   pageSize?: number;
   page?: number;
   goodsSpuId?: string;
+  keyword?: string;
 }
 
 export interface CreateManagerParameter {

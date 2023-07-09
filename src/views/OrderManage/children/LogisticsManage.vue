@@ -1,5 +1,7 @@
 <script setup lang="ts"></script>
 
-<template>logistics</template>
+<template>
+  <div>logistics</div>
+</template>
 
 <style lang="less" scoped></style>
